@@ -42,7 +42,7 @@ jobs:
       aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
       aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
 
-  test_a_thing:
+  check_images:
     name: Check images
     needs: ['docker_build_scan_push']
     runs-on: ubuntu-latest
