@@ -1,0 +1,45 @@
+**/terraform.tfstate*
+.terraform
+.notes
+.vs
+
+# Virtual Environments
+.venv
+
+# lambda stuff
+lambda*.zip
+lambda_functions/*/lambda_layers/python/lib/python3.7/site-packages/
+!lambda_functions/*/lambda_layers/python/lib/python3.7/site-packages/README.md
+
+# Ruby
+*.lock
+
+# IDE & development
+.idea
+__pycache__
+.vscode/
+*.iml
+
+# Mac
+.DS_Store
+
+# Test environment
+*generated.postman_environment.json
+process.yml
+.pytest_cache/
+
+/venv/
+/mock_sirius/deputy-reporting-openapi.yml
+/mock_sirius/log*
+.coverage
+*crash.log
+
+/lambda_functions/v1/integration_tests/*.json
+/mock_sirius_backend/venv
+*mock_integration_rest_api/deputy*.yml
+
+*.log
+log/pact.log
+
+*report.html
+*__init__.pyc

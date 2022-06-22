@@ -1,0 +1,18 @@
+---
+version: '3'
+
+services:
+  mock-lambda:
+    volumes:
+      - ./lambda_functions/v2/functions/documents/app:/var/task/app
+  mock-sirius:
+    volumes:
+      - ./mock_sirius/openapi.yml:/app/openapi.yml
+  unit-tests:
+    volumes:
+      - ./lambda_functions/v2/tests:/app/lambda_functions/v2/tests
+      - ./lambda_functions/v2/functions:/app/lambda_functions/v2/functions
+      - ./lambda_functions/v2/test-app.sh:/app/test-app.sh
+  integration-tests:
+    volumes:
+      - ./integration_tests/v2/:/app/integration_tests/v2/

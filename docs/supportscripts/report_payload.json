@@ -1,0 +1,20 @@
+{
+  "report": {
+    "data": {
+      "type": "reports",
+      "attributes": {
+        "reporting_period_from": "2017-02-01",
+        "reporting_period_to": "2018-01-31",
+        "year": 2017,
+        "date_submitted": "2020-08-05T12:48:07+01:00",
+        "type": "HW",
+        "submission_id": 37
+      },
+      "file": {
+        "name": "DigiRep-2018_2020-08-05_80332122.pdf",
+        "mimetype": "application/pdf",
+        "s3_reference": "dd_doc_62_15916290546271"
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+---
+version: '3'
+
+services:
+  mock-lambda:
+    build:
+      context: ./lambda_functions/v2
+      dockerfile: Dockerfile
+    ports:
+      - "9000:8080"
+    depends_on:
+      - mock-sirius
+      - localstack
+    environment:
+      SIRIUS_BASE_URL: http://mock-sirius:80
+      ENVIRONMENT: local
+      LOGGER_LEVEL: DEBUG
+      API_VERSION: v2
+      SESSION_DATA: publicapi@opgtest.com
+      DIGIDEPS_S3_BUCKET: pa-uploads-branch-replication
+      DIGIDEPS_S3_ROLE_ARN: arn:aws:iam::248804316466:role/integrations-s3-read-development
+      AWS_ACCESS_KEY_ID: FAKE
+      AWS_SECRET_ACCESS_KEY: FAKE
+      USE_MOCK_SIRIUS: "0"
+  mock-sirius:
+    build:
+      context: ./mock_sirius
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+  localstack:
+    build:
+      context: ./localstack_initialisation
+      dockerfile: Dockerfile
+    environment:
+      - SERVICES=s3,secretsmanager
+      - DEFAULT_REGION=eu-west-1
+      - USE_SINGLE_REGION=1
+      - DEBUG=1
+    ports:
+      - "4566:4566"
+  unit-tests:
+    build:
+      context: ./lambda_functions/v2
+      dockerfile: Dockerfile-unittests
+    environment:
+      FLASK_DEBUG: "0"
+      FLASK_APP: "docs_mock.py"
+      FLASK_ENV: "development"
+      API_VERSION: "v1"
+      SIRIUS_BASE_URL: "http://not-really-sirius.com"
+      ENVIRONMENT: "dev"
+      USE_MOCK_SIRIUS: "0"
+      SESSION_DATA: ""
+      AWS_XRAY_CONTEXT_MISSING: "LOG_ERROR"
+  integration-tests:
+    build:
+      context: ./integration_tests
+      dockerfile: Dockerfile
+    environment:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+      TF_WORKSPACE: $TF_WORKSPACE
+      CI: $CI
