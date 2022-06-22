@@ -44,7 +44,6 @@ jobs:
     strategy:
       matrix:
         lambda_name: ${{ fromJSON(inputs.lambda_names) }}
-
     steps:
       - name: See images
         id: image_view
