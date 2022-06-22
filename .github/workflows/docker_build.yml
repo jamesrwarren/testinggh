@@ -9,19 +9,23 @@ on:
         description: 'Tag for docker image'
         required: true
         type: string
+      ecr_repository:
+        description: 'ECR repository'
+        required: true
+        type: string
     secrets:
       aws_access_key_id_actions:
         required: true
       aws_secret_access_key_actions:
         required: true
 
+# ${{ fromJSON(inputs.lambda_names) }}
+
 jobs:
   docker_build:
     name: Build, Scan and Push Lambdas
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        lambda_name: ${{ fromJSON(inputs.lambda_names) }}
+
     steps:
       - name: Check out code
         id: checkout_code
@@ -35,13 +39,32 @@ jobs:
           VERSION: ${{ inputs.tag }}
 
   docker_scan:
-    name: Scans the images
-    uses: ministryofjustice/opg-github-workflows/.github/workflows/analysis-containers-trivy-to-github-security.yml@main
-      with:
-        tagged_images: [
-            "${{ inputs.ecr_repository }}/integrations/deputy-reporting-lambda:${{ inputs.tag }}",
-            "${{ inputs.ecr_repository }}/integrations/deputy-reporting-mock-sirius:${{ inputs.tag }}"
-        ]
+    name: Scan Lambdas
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lambda_name: ${{ fromJSON(inputs.lambda_names) }}
+
+    steps:
+      - name: See images
+        id: image_view
+        run: docker image ls
+
+      - name: Trivy Image Vulnerability Scanner
+        id: trivy_scan
+        uses: aquasecurity/trivy-action@0.3.0
+        with:
+          image-ref: ${{ inputs.ecr_repository }}/integrations/${{ matrix.lambda_name }}:{{ inputs.tag }}
+          severity: 'HIGH,CRITICAL'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        id: trivy_upload_sarif
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
 #      - uses: unfor19/install-aws-cli-action@v1
 #      - name: Configure AWS Credentials

@@ -31,7 +31,7 @@ jobs:
       source_github_token: ${{ secrets.GITHUB_TOKEN }}
 
   docker_build_scan_push:
-    name: Build, Scan and Push
+    name: Build, Scan and Push.
     needs: ['create_tags']
     uses: ./.github/workflows/docker_build.yml
     with:
@@ -41,6 +41,24 @@ jobs:
     secrets:
       aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
       aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+
+  check_images:
+    name: Check images
+    needs: ['docker_build_scan_push']
+    runs-on: ubuntu-latest
+    steps:
+      - name: View images
+        id: images
+        run: docker image ls
+
+#  docker_scan:
+#    name: Scans the images
+#    uses: ministryofjustice/opg-github-workflows/.github/workflows/analysis-containers-trivy-to-github-security.yml@main
+#    with:
+#      tagged_images: [
+#          "${{ inputs.ecr_repository }}/integrations/deputy-reporting-lambda:${{ inputs.tag }}",
+#          "${{ inputs.ecr_repository }}/integrations/deputy-reporting-mock-sirius:${{ inputs.tag }}"
+#      ]
 
 #  tfsec:
 #    uses: ministryofjustice/opg-github-workflows/.github/workflows/analysis-infrastructure-tfsec-pr-feedback.yml@main
