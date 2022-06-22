@@ -9,6 +9,10 @@ on:
         description: 'Tag for docker image'
         required: true
         type: string
+      ecr_repository:
+        description: 'ECR repository'
+        required: true
+        type: string
     secrets:
       aws_access_key_id_actions:
         required: true
@@ -33,15 +37,6 @@ jobs:
         env:
           AWS_REGISTRY: ${{ inputs.ecr_repository }}
           VERSION: ${{ inputs.tag }}
-
-  docker_scan:
-    name: Scans the images
-    uses: ministryofjustice/opg-github-workflows/.github/workflows/analysis-containers-trivy-to-github-security.yml@main
-      with:
-        tagged_images: [
-            "${{ inputs.ecr_repository }}/integrations/deputy-reporting-lambda:${{ inputs.tag }}",
-            "${{ inputs.ecr_repository }}/integrations/deputy-reporting-mock-sirius:${{ inputs.tag }}"
-        ]
 
 #      - uses: unfor19/install-aws-cli-action@v1
 #      - name: Configure AWS Credentials
