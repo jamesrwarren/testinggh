@@ -85,6 +85,7 @@ jobs:
              *repo*)
                  tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$tagFmt") | grep -E "$tagFmt" | sort | tail -n 1 | grep -E "$tagFmt")
                  pre_tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
+                 pre_tag2=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
                  ;;
              *branch*)
                  tag=$(semver $(git tag --list --merged HEAD --sort=-v:refname | grep -E "$tagFmt") | sort | tail -n 1 | grep -E "$tagFmt")
@@ -97,6 +98,7 @@ jobs:
           echo $tag
           echo "PRE TAGS"
           echo $pre_tag
+          echo $pre_tag2
           echo "TAG_LIST"
           semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt")
           echo $(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | tail -n 1 | grep -E "$preTagFmt")
@@ -119,9 +121,9 @@ jobs:
           then
              log=$(git log --pretty='%B')
              tag="$initial_version"
-             if [ -z "$pre_tag" ] && $pre_release
+             if [ -z "$pre_tag2" ] && $pre_release
              then
-               pre_tag="$initial_version"
+               pre_tag2="$initial_version"
              fi
           else
              log=$(git log $ver$tag..HEAD --pretty='%B')
@@ -163,9 +165,9 @@ jobs:
           if $pre_release
           then
              # Already a prerelease available, bump it
-             if [[ "$pre_tag" == *"$new"* ]]; then
+             if [[ "$pre_tag2" == *"$new"* ]]; then
                  echo "Commits exist on branch"
-                 new=$(semver -i prerelease $pre_tag --preid $suffix); part="pre-$part"
+                 new=$(semver -i prerelease $pre_tag2 --preid $suffix); part="pre-$part"
              else
                  echo "First commit on branch"
                  new="$new-$suffix.1"; part="pre-$part"
@@ -184,7 +186,7 @@ jobs:
 
           if $pre_release
           then
-             echo -e "Bumping tag ${pre_tag}. \n\tNew tag ${new}"
+             echo -e "Bumping tag ${pre_tag2}. \n\tNew tag ${new}"
           else
              echo -e "Bumping tag ${tag}. \n\tNew tag ${new}"
           fi
