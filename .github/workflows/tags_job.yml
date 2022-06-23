@@ -31,7 +31,9 @@ jobs:
 
       - name: Bump version
         id: bump_version
-        run: ./.github/tag.sh
+        run: |
+          sudo chmod 755 ./.github/tag.sh
+          ./.github/tag.sh
         env:
           GITHUB_TOKEN: ${{ secrets.source_github_token }}
           INITIAL_VERSION: 0.0.0
