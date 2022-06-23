@@ -23,12 +23,6 @@ jobs:
       - name: Install semver
         id: install_semver
         run: sudo apt install node-semver
-#      - name: Setup upterm session
-#        uses: lhotari/action-upterm@v1
-#        with:
-#          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
-#          limit-access-to-actor: true
-
       - name: Bump version
         id: bump_version
         run: ./.github/tag.sh
@@ -40,7 +34,13 @@ jobs:
           RELEASE_BRANCHES: main
           WITH_V: true
           TAG_CONTEXT: branch
-
+#      - name: Setup upterm session
+#        uses: lhotari/action-upterm@v1
+#        with:
+#          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+#          limit-access-to-actor: true
+    outputs:
+      version_tag: ${{ steps.bump_version.outputs.tag }}
 
 
 
