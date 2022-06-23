@@ -97,6 +97,8 @@ jobs:
           echo $tag
           echo "PRE TAGS"
           echo $pre_tag
+          echo "TAG_LIST"
+          echo $(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | tail -n 1 | grep -E "$preTagFmt")
 
           if $with_v
           then
