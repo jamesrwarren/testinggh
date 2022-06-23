@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
       - name: Install semver
         id: install_semver
-        run: sudo install node-semver
+        run: sudo apt install node-semver
       - name: Bump version
         id: bump_version
         run: |
@@ -35,7 +35,7 @@ jobs:
           dryrun=${DRY_RUN:-false}
           initial_version=${INITIAL_VERSION:-0.0.0}
           tag_context=${TAG_CONTEXT:-repo}
-          suffix=blah
+          suffix=${PRERELEASE_SUFFIX}
           verbose=${VERBOSE:-true}
           verbose=${VERBOSE:-true}
           # since https://github.blog/2022-04-12-git-security-vulnerability-announced/ runner uses?
@@ -255,7 +255,6 @@ jobs:
 #      - name: bump code
 #        id: bump_code
 #        run: |
-
 
 
 #
