@@ -30,6 +30,7 @@ jobs:
           PRERELEASE_SUFFIX: ${{ inputs.branch_name }}
           RELEASE_BRANCHES: main
           WITH_V: true
+          TAG_CONTEXT: branch
       - name: Show version
         id: show_version
         run: echo ${{ steps.bump_version.outputs.tag }}
