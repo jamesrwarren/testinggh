@@ -78,13 +78,10 @@ jobs:
           case "$tag_context" in
              *repo*)
                  taglist="$(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$tagFmt")"
-                 echo $taglist
                  tag="$(semver $taglist | grep -E "$tagFmt" | tail -n 1)"
 
                  pre_taglist="$(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt")"
-                 echo $pre_taglist
                  pre_tag="$(semver "$pre_taglist" | grep -E "$preTagFmt" | tail -n 1)"
-                 echo $pre_tag
                  ;;
              *branch*)
                  taglist="$(git tag --list --merged HEAD --sort=-v:refname | grep -E "$tagFmt")"
@@ -95,6 +92,13 @@ jobs:
                  ;;
              * ) echo "Unrecognised context"; exit 1;;
           esac
+
+          echo "TAGS"
+          echo $tag
+          echo $taglist
+          echo "PRE TAGS"
+          echo $pre_tag
+          echo $pre_taglist
 
           if $with_v
           then
