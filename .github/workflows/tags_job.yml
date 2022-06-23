@@ -84,7 +84,7 @@ jobs:
           tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$tagFmt") | sort | tail -n 1 | grep -E "$tagFmt")
           echo $tag
           pre_tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
-          echo pre_tag
+          echo $pre_tag
 
           if $with_v
           then

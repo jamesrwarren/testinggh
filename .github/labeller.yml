@@ -1,0 +1,6 @@
+repo:
+  - any: ["./*"]
+
+docs:
+  - any: ["docs/**/*"]
+
