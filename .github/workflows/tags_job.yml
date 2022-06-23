@@ -80,34 +80,11 @@ jobs:
           tagFmt="^v?[0-9]+\.[0-9]+\.[0-9]+$"
           preTagFmt="^v?[0-9]+\.[0-9]+\.[0-9]+(-$suffix\.[0-9]+)?$"
 
-          # get latest tag that looks like a semver (with or without v)
-          case "$tag_context" in
-             *repo*)
-                 tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$tagFmt") | grep -E "$tagFmt" | sort | tail -n 1 | grep -E "$tagFmt")
-                 pre_tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
-                 pre_tag2=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
-                 ;;
-             *branch*)
-                 tag=$(semver $(git tag --list --merged HEAD --sort=-v:refname | grep -E "$tagFmt") | sort | tail -n 1 | grep -E "$tagFmt")
-                 pre_tag=$(semver $(git tag --list --merged HEAD --sort=-v:refname | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
-                 ;;
-             * ) echo "Unrecognised context"; exit 1;;
-          esac
-
-          echo "TAGS"
-          echo $tag
-          echo "PRE TAGS"
-          echo $pre_tag
-          echo $pre_tag2
           echo "TAG_LIST"
-          semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt")
-          echo $(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | tail -n 1 | grep -E "$preTagFmt")
-          blah=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
-          echo $blah
-          blah2=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort -r | tail -n 1 | grep -E "$preTagFmt")
-          echo $blah2
-          blah3=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | tail -n 1 | grep -E "$preTagFmt")
-          echo $blah3
+          tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$tagFmt") | sort | tail -n 1 | grep -E "$tagFmt")
+          echo $tag
+          pre_tag=$(semver $(git for-each-ref --sort=-v:refname --format '%(refname:lstrip=2)' | grep -E "$preTagFmt") | sort | tail -n 1 | grep -E "$preTagFmt")
+          echo pre_tag
 
           if $with_v
           then
@@ -121,9 +98,9 @@ jobs:
           then
              log=$(git log --pretty='%B')
              tag="$initial_version"
-             if [ -z "$pre_tag2" ] && $pre_release
+             if [ -z "$pre_tag" ] && $pre_release
              then
-               pre_tag2="$initial_version"
+               pre_tag="$initial_version"
              fi
           else
              log=$(git log $ver$tag..HEAD --pretty='%B')
@@ -165,9 +142,9 @@ jobs:
           if $pre_release
           then
              # Already a prerelease available, bump it
-             if [[ "$pre_tag2" == *"$new"* ]]; then
+             if [[ "$pre_tag" == *"$new"* ]]; then
                  echo "Commits exist on branch"
-                 new=$(semver -i prerelease $pre_tag2 --preid $suffix); part="pre-$part"
+                 new=$(semver -i prerelease $pre_tag --preid $suffix); part="pre-$part"
              else
                  echo "First commit on branch"
                  new="$new-$suffix.1"; part="pre-$part"
@@ -186,7 +163,7 @@ jobs:
 
           if $pre_release
           then
-             echo -e "Bumping tag ${pre_tag2}. \n\tNew tag ${new}"
+             echo -e "Bumping tag ${pre_tag}. \n\tNew tag ${new}"
           else
              echo -e "Bumping tag ${tag}. \n\tNew tag ${new}"
           fi
