@@ -33,6 +33,19 @@ jobs:
           echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
           echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF} | tr -cd '[:alnum:]')"
         id: extract_branch
+      - uses: 8BitJonny/gh-get-current-pr@2.1.0
+        id: PR
+      - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
+
+  unit_tests:
+    runs-on: ubuntu-latest
+    name: Run unit tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run unit tests
+        run: docker-compose up unit-tests
+        id: unit_tests
 
   create_tags:
     name: Create Tags
@@ -44,6 +57,27 @@ jobs:
     secrets:
       source_github_token: ${{ secrets.GITHUB_TOKEN }}
 
+#  create_release:
+#    name: Create Release
+#    needs: ['create_tags']
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#      - name: Create a release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+#        with:
+#          tag_name: ${{ needs.create_tags.outputs.version_tag }}
+#          release_name: Release ${{ needs.create_tags.outputs.version_tag }}
+#          body: |
+#            Changes in this Release
+#            - Jim change
+#            - Second Change
+#          draft: false
+#          prerelease: false
 #  docker_build_scan_push:
 #    name: Build, Scan and Push
 #    needs: ['create_tags']
