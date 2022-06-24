@@ -42,7 +42,5 @@ jobs:
           RELEASE_BRANCHES: main
           WITH_V: true
           TAG_CONTEXT: branch
-
-
-
-
+    outputs:
+      version_tag: ${{ steps.bump_version.outputs.tag }}
