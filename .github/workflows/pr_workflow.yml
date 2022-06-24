@@ -33,9 +33,6 @@ jobs:
           echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
           echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF} | tr -cd '[:alnum:]')"
         id: extract_branch
-      - uses: 8BitJonny/gh-get-current-pr@2.1.0
-        id: PR
-      - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
 
   unit_tests:
     runs-on: ubuntu-latest
