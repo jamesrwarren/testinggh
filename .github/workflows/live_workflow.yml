@@ -61,7 +61,7 @@ jobs:
           release_name: Release ${{ needs.create_tags.outputs.version_tag }}
           body: |
             Changes in this Release
-            - First Change
+            - Jim change
             - Second Change
           draft: false
           prerelease: false
