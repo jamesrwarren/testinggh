@@ -18,7 +18,7 @@ permissions:
   statuses: none
 
 jobs:
- branch_name:
+  branch_name:
     runs-on: ubuntu-latest
     name: Extract branch name
     outputs:
@@ -49,11 +49,11 @@ jobs:
           echo "##[set-output name=pr_body;]$(echo ${BODY})"
           echo "##[set-output name=pr_title;]$(echo ${TITLE} | tr -cd '[:alnum:]')"
         id: pr_details
-#      - name: Dump GitHub context
-#        env:
-#          GITHUB_CONTEXT: ${{ toJson(github) }}
-#        run: |
-#          echo "$GITHUB_CONTEXT"
+  #      - name: Dump GitHub context
+  #        env:
+  #          GITHUB_CONTEXT: ${{ toJson(github) }}
+  #        run: |
+  #          echo "$GITHUB_CONTEXT"
 
   create_tags:
     name: Create Tags
