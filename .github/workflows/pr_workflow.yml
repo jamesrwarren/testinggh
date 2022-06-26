@@ -30,9 +30,13 @@ jobs:
       - name: Extract branch
         shell: bash
         run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
-          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF} | tr -cd '[:alnum:]')"
+          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}})"
+          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | tr -cd '[:alnum:]')"
         id: extract_branch
+      - name: check some PR stuff
+        run: |
+          echo ${{ github.event }} > ./SOMEFILE.txt
+          cat ./SOMEFILE.txt
 
   unit_tests:
     runs-on: ubuntu-latest
