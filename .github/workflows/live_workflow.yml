@@ -38,16 +38,17 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           PR_URL: ${{ github.event.repository.pulls_url }}
         run: |
-          echo "COMMIT_MESSAGE"
-          echo "PR_URL"
           PR_NUMBER="$(echo "${COMMIT_MESSAGE}" | grep -Eo '#\S+' | tr -d '#')"
           BASE_PR_URL="$(echo "${PR_URL}" | awk -F'/pulls' '{print $1"/pulls"}')"
           URL_FINAL="${BASE_PR_URL}/${PR_NUMBER}"
           echo $URL_FINAL
-          BODY="$(curl -s $URL_FINAL | jq .body)"
           TITLE="$(curl -s $URL_FINAL | jq .title)"
+          BODY="$(curl -s $URL_FINAL | jq .body)"
+          BODY="${BODY//'%'/'%25'}"
+          BODY="${BODY//$'\n'/'%0A'}"
+          BODY="${BODY//$'\r'/'%0D'}"
           echo "##[set-output name=pr_body;]$(echo ${BODY})"
-          echo "##[set-output name=pr_title;]$(echo ${TITLE} | tr -cd '[:alnum:]')"
+          echo "##[set-output name=pr_title;]$(echo ${TITLE})"
         id: pr_details
   #      - name: Dump GitHub context
   #        env:
