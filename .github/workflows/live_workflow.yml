@@ -41,7 +41,7 @@ jobs:
           echo "COMMIT_MESSAGE"
           echo "PR_URL"
           PR_NUMBER="$(echo "${COMMIT_MESSAGE}" | grep -Eo '#\S+' | tr -d '#')"
-          BASE_PR_URL="$(echo "${PR_URL}" | awk -F'\' '{print $1}')"
+          BASE_PR_URL="$(echo "${PR_URL}" | awk -F'/pulls' '{print $1"/pulls"}')"
           URL_FINAL="${BASE_PR_URL}/${PR_NUMBER}"
           echo $URL_FINAL
           BODY="$(curl -s $URL_FINAL | jq .body)"
