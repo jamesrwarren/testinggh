@@ -65,9 +65,56 @@ jobs:
     secrets:
       source_github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  docker_build_scan_push:
+    name: Build, Scan and Push
+    needs: ['create_tags']
+    uses: ./.github/workflows/docker_build.yml
+    with:
+      lambda_names: '[{"name": "deputy-reporting-lambda", "path": "lambda_functions/v2"}, {"name": "deputy-reporting-mock-sirius", "path": "mock_sirius"}]'
+      tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets:
+      aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+      aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+
+  terraform_plan_apply_development:
+    name: Terraform Environment
+    needs: ['docker_build_scan_push', 'create_tags']
+    uses: ./.github/workflows/terraform_job.yml
+    with:
+      terraform_path: 'terraform/environment'
+      image_tag: ${{ needs.create_tags.outputs.version_tag }}
+      workspace: 'development'
+    secrets:
+      aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+      aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+
+  terraform_plan_apply_preproduction:
+    name: Terraform Environment Preproduction
+    needs: ['terraform_plan_apply_development', 'create_tags']
+    uses: ./.github/workflows/terraform_job.yml
+    with:
+      terraform_path: 'terraform/environment'
+      image_tag: ${{ needs.create_tags.outputs.version_tag }}
+      workspace: 'preproduction'
+    secrets:
+      aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+      aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+
+  terraform_plan_apply_production:
+    name: Terraform Environment Production
+    needs: ['terraform_plan_apply_preproduction', 'create_tags']
+    uses: ./.github/workflows/terraform_job.yml
+    with:
+      terraform_path: 'terraform/environment'
+      image_tag: ${{ needs.create_tags.outputs.version_tag }}
+      workspace: 'production'
+    secrets:
+      aws_access_key_id_actions: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+      aws_secret_access_key_actions: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+
   create_release:
     name: Create Release
-    needs: ['create_tags', 'branch_name']
+    needs: ['terraform_plan_apply_production', 'branch_name']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
