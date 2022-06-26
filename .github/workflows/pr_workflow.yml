@@ -30,23 +30,14 @@ jobs:
       - name: Extract branch
         shell: bash
         run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
-          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF} | tr -cd '[:alnum:]')"
+          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}})"
+          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | tr -cd '[:alnum:]')"
         id: extract_branch
-      - name: check some PR stuff
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          echo ${{ github.event.pull_request.title }}
-          echo ${{ github.event.pull_request.body }}
-
-  unit_tests:
-    runs-on: ubuntu-latest
-    name: Run unit tests
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Run unit tests
-        run: docker-compose up unit-tests
-        id: unit_tests
+          echo "$GITHUB_CONTEXT"
 
   create_tags:
     name: Create Tags
@@ -57,6 +48,16 @@ jobs:
 #      branch_name: ${{ needs.branch_name.outputs.raw_branch_name }}
     secrets:
       source_github_token: ${{ secrets.GITHUB_TOKEN }}
+
+#  unit_tests:
+#    runs-on: ubuntu-latest
+#    name: Run unit tests
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#      - name: Run unit tests
+#        run: docker-compose up unit-tests
+#        id: unit_tests
 
 #  create_release:
 #    name: Create Release

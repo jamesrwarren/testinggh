@@ -18,29 +18,35 @@ permissions:
   statuses: none
 
 jobs:
-  branch_name:
-    uses: ministryofjustice/opg-github-workflows/.github/workflows/data-parse-branch-name.yml@main
 #  branch_name:
-#    runs-on: ubuntu-latest
-#    name: Extract branch name
-#    outputs:
-#      raw_branch: ${{ steps.extract_branch.outputs.branch }}
-#      sanitised_branch: ${{ steps.extract_branch.outputs.branchsane }}
-#    steps:
-#      - name: Extract branch
-#        shell: bash
-#        run: |
-#          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
-#          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF} | tr -cd '[:alnum:]')"
-#        id: extract_branch
+#    uses: ministryofjustice/opg-github-workflows/.github/workflows/data-parse-branch-name.yml@main
+
+  branch_name:
+    runs-on: ubuntu-latest
+    name: Extract branch name
+    outputs:
+      raw_branch: ${{ steps.extract_branch.outputs.branch }}
+      sanitised_branch: ${{ steps.extract_branch.outputs.branchsane }}
+    steps:
+      - name: Extract branch
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}})"
+          echo "##[set-output name=branchsane;]$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | tr -cd '[:alnum:]')"
+        id: extract_branch
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
 
   create_tags:
     name: Create Tags
     needs: ['branch_name']
     uses: ./.github/workflows/tags_job.yml
     with:
-#      branch_name: ${{ needs.branch_name.outputs.raw_branch }}
-      branch_name: ${{ needs.branch_name.outputs.raw_branch_name }}
+      branch_name: ${{ needs.branch_name.outputs.raw_branch }}
+#      branch_name: ${{ needs.branch_name.outputs.raw_branch_name }}
     secrets:
       source_github_token: ${{ secrets.GITHUB_TOKEN }}
 
