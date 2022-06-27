@@ -33,12 +33,18 @@ jobs:
 
       - name: Trivy Image Vulnerability Scanner
         id: trivy_scan
-        uses: aquasecurity/trivy-action@0.4.1
+        uses: aquasecurity/trivy-action@0.5.0
         with:
           image-ref: ${{ matrix.lambda_name.name }}:latest
           severity: 'HIGH,CRITICAL'
           format: 'sarif'
           output: 'trivy-results.sarif'
+
+      - name: Cat the trivy file
+        id: cat_file
+        run: |
+          ls -alt
+          cat trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
         id: trivy_upload_sarif
@@ -46,30 +52,31 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+          category: ${{ matrix.lambda_name.name }}
 
       - uses: unfor19/install-aws-cli-action@v1
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1.6.1
-        with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id_actions }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key_actions }}
-          aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::311462405659:role/opg-metrics-ci
-          role-duration-seconds: 900
-          role-session-name: OPGMetricsECRGithubAction
-      - name: Login to ECR
-        id: login_ecr
-        uses: aws-actions/amazon-ecr-login@v1.4.0
-        with:
-          registries: 311462405659
-      - name: Push Container
-        env:
-          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-          ECR_REPOSITORY: integrations/${{ matrix.lambda_name.name }}
-        run: |
-          docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ inputs.tag }}
-          if [ $BRANCH_NAME == "main" ]; then
-            docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:main-${{ inputs.tag }}
-            docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          fi
-            docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v1.6.1
+#        with:
+#          aws-access-key-id: ${{ secrets.aws_access_key_id_actions }}
+#          aws-secret-access-key: ${{ secrets.aws_secret_access_key_actions }}
+#          aws-region: eu-west-1
+#          role-to-assume: arn:aws:iam::311462405659:role/opg-metrics-ci
+#          role-duration-seconds: 900
+#          role-session-name: OPGMetricsECRGithubAction
+#      - name: Login to ECR
+#        id: login_ecr
+#        uses: aws-actions/amazon-ecr-login@v1.4.0
+#        with:
+#          registries: 311462405659
+#      - name: Push Container
+#        env:
+#          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+#          ECR_REPOSITORY: integrations/${{ matrix.lambda_name.name }}
+#        run: |
+#          docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ inputs.tag }}
+#          if [ $BRANCH_NAME == "main" ]; then
+#            docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:main-${{ inputs.tag }}
+#            docker tag ${{ matrix.lambda_name.name }}:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#          fi
+#            docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
