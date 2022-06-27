@@ -1,0 +1,164 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "fullName": "Trivy Vulnerability Scanner",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "name": "Trivy",
+          "rules": [
+            {
+              "id": "CVE-2022-1271",
+              "name": "OsPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2022-1271"
+              },
+              "fullDescription": {
+                "text": "No description is available for this CVE."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2022-1271",
+              "help": {
+                "text": "Vulnerability CVE-2022-1271\nSeverity: HIGH\nPackage: xz-libs\nFixed Version: 5.2.2-1.14.amzn1\nLink: [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)\nNo description is available for this CVE.",
+                "markdown": "**Vulnerability CVE-2022-1271**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|xz-libs|5.2.2-1.14.amzn1|[CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)|\n\nNo description is available for this CVE."
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "8.0",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            },
+            {
+              "id": "CVE-2021-33503",
+              "name": "LanguageSpecificPackageVulnerability",
+              "shortDescription": {
+                "text": "CVE-2021-33503"
+              },
+              "fullDescription": {
+                "text": "An issue was discovered in urllib3 before 1.26.5. When provided with a URL containing many @ characters in the authority component, the authority regular expression exhibits catastrophic backtracking, causing a denial of service if a URL were passed as a parameter or redirected to via an HTTP redirect."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/nvd/cve-2021-33503",
+              "help": {
+                "text": "Vulnerability CVE-2021-33503\nSeverity: HIGH\nPackage: urllib3\nFixed Version: 1.26.5\nLink: [CVE-2021-33503](https://avd.aquasec.com/nvd/cve-2021-33503)\nAn issue was discovered in urllib3 before 1.26.5. When provided with a URL containing many @ characters in the authority component, the authority regular expression exhibits catastrophic backtracking, causing a denial of service if a URL were passed as a parameter or redirected to via an HTTP redirect.",
+                "markdown": "**Vulnerability CVE-2021-33503**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|urllib3|1.26.5|[CVE-2021-33503](https://avd.aquasec.com/nvd/cve-2021-33503)|\n\nAn issue was discovered in urllib3 before 1.26.5. When provided with a URL containing many @ characters in the authority component, the authority regular expression exhibits catastrophic backtracking, causing a denial of service if a URL were passed as a parameter or redirected to via an HTTP redirect."
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "7.5",
+                "tags": [
+                  "vulnerability",
+                  "security",
+                  "HIGH"
+                ]
+              }
+            }
+          ],
+          "version": "0.29.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2022-1271",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Package: gzip\nInstalled Version: 1.5-9.19.amzn1\nVulnerability CVE-2022-1271\nSeverity: HIGH\nFixed Version: 1.5-9.20.amzn1\nLink: [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deputy-reporting-lambda:latest",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2022-1271",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Package: xz\nInstalled Version: 5.2.2-1.13.amzn1\nVulnerability CVE-2022-1271\nSeverity: HIGH\nFixed Version: 5.2.2-1.14.amzn1\nLink: [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deputy-reporting-lambda:latest",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2022-1271",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Package: xz-libs\nInstalled Version: 5.2.2-1.13.amzn1\nVulnerability CVE-2022-1271\nSeverity: HIGH\nFixed Version: 5.2.2-1.14.amzn1\nLink: [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deputy-reporting-lambda:latest",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CVE-2021-33503",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Package: urllib3\nInstalled Version: 1.25.11\nVulnerability CVE-2021-33503\nSeverity: HIGH\nFixed Version: 1.26.5\nLink: [CVE-2021-33503](https://avd.aquasec.com/nvd/cve-2021-33503)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "var/task/urllib3-1.25.11.dist-info/METADATA",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits",
+      "originalUriBaseIds": {
+        "ROOTPATH": {
+          "uri": "file:///"
+        }
+      }
+    }
+  ]
+}
