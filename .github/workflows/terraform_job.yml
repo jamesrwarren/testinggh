@@ -38,14 +38,14 @@ jobs:
         with:
           terraform_version: 1.2.2
 
-      - name: Configure AWS Credentials For Terraform
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id_actions }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key_actions }}
-          aws-region: eu-west-1
-          role-duration-seconds: 3600
-          role-session-name: OPGDeputyReportingECRGithubAction
+#      - name: Configure AWS Credentials For Terraform
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.aws_access_key_id_actions }}
+#          aws-secret-access-key: ${{ secrets.aws_secret_access_key_actions }}
+#          aws-region: eu-west-1
+#          role-duration-seconds: 3600
+#          role-session-name: OPGDeputyReportingECRGithubAction
 
       - name: Lint Terraform
         id: tf_lint
