@@ -42,11 +42,10 @@ jobs:
           BASE_PR_URL="$(echo "${PR_URL}" | awk -F'/pulls' '{print $1"/pulls"}')"
           URL_FINAL="${BASE_PR_URL}/${PR_NUMBER}"
           echo $URL_FINAL
-          TITLE="$(curl -s $URL_FINAL | jq .title)"
+          TITLE="#$(curl -s $URL_FINAL | jq .title)"
           BODY="$(curl -s $URL_FINAL | jq .body)"
           BODY="${BODY//'%'/'%25'}"
-          BODY="${BODY//$'\n'/'%0A'}"
-          BODY="${BODY//$'\r'/'%0D'}"
+          BODY="$(echo $BODY | sed "s/$(printf '\r')\$//")"
           BODY="$(echo $BODY | sed '$ ! s/$/\\n/' | tr -d '\n' | sed 's/\\n/\%0A/g')"
           echo "##[set-output name=pr_body;]$(echo ${BODY})"
           echo "##[set-output name=pr_title;]$(echo ${TITLE})"
@@ -78,6 +77,7 @@ jobs:
           release_name: Release ${{ needs.create_tags.outputs.version_tag }}
           body: |
             ${{ needs.branch_name.outputs.pr_title }}
+
             ${{ needs.branch_name.outputs.pr_body }}
           draft: false
           prerelease: false
