@@ -46,7 +46,11 @@ jobs:
           BODY=$(curl -s $URL_FINAL | jq .body)
           BODY=${BODY//'%'/'%25'}
           BODY=$(echo $BODY | sed "s/$(printf '\r')\$//")
+          BODY=$(echo $BODY | sed 's/\r$//')
           BODY=$(echo $BODY | sed '$ ! s/$/\\n/' | tr -d '\n' | sed 's/\\n/\%0A/g')
+          BODY=$(echo $BODY | sed "s/$(printf '\r')\$//")
+          BODY=$(echo $BODY | sed 's/\r$//')
+          BODY=$(echo $BODY | sed 's/\\r//g')
           echo "##[set-output name=pr_body;]$(echo ${BODY})"
           echo "##[set-output name=pr_title;]$(echo ${TITLE})"
         id: pr_details
