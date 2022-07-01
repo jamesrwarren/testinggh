@@ -45,19 +45,13 @@ jobs:
           URL_FINAL="${BASE_PR_URL}/${PR_NUMBER}"
           echo $URL_FINAL
           TITLE=$(curl -s $URL_FINAL | jq .title)
-          TITLE="#${TITLE:1:-1}"
+          TITLE="## ${TITLE:1:-1}"
           BODY=$(curl -s $URL_FINAL | jq .body)
           BODY=${BODY//'%'/'%25'}
           BODY=$(echo $BODY | sed '$ ! s/$/\\n/' | tr -d '\n' | sed 's/\\n/\%0A/g')
-          BODY1=$(echo $BODY | sed "s/$(printf '\r')\$//")
-          BODY2=$(echo $BODY | sed 's/\r$//')
-          BODY3=$(echo $BODY | sed 's/\\r//g')
-          BODY1=${BODY1:1:-1}
-          BODY2=${BODY2:1:-1}
-          BODY3=${BODY3:1:-1}
-          echo "##[set-output name=pr_body1;]$(echo ${BODY1})"
-          echo "##[set-output name=pr_body2;]$(echo ${BODY2})"
-          echo "##[set-output name=pr_body3;]$(echo ${BODY3})"
+          BODY=$(echo $BODY | sed 's/\\r//g')
+          BODY=${BODY:1:-1}
+          echo "##[set-output name=pr_body;]$(echo ${BODY})"
           echo "##[set-output name=pr_title;]$(echo ${TITLE})"
         id: pr_details
 
@@ -88,11 +82,7 @@ jobs:
           body: |
             ${{ needs.branch_name.outputs.pr_title }}
 
-
-
-            ${{ needs.branch_name.outputs.pr_body1 }}
-            ${{ needs.branch_name.outputs.pr_body2 }}
-            ${{ needs.branch_name.outputs.pr_body3 }}
+            ${{ needs.branch_name.outputs.pr_body }}
           draft: false
           prerelease: false
 
