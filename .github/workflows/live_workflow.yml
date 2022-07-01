@@ -51,8 +51,10 @@ jobs:
           BODY=$(echo $BODY | sed "s/$(printf '\r')\$//")
           BODY=$(echo $BODY | sed 's/\r$//')
           BODY=$(echo $BODY | sed 's/\\r//g')
+          TEST=hello
           echo "##[set-output name=pr_body;]$(echo ${BODY})"
           echo "##[set-output name=pr_title;]$(echo ${TITLE})"
+          echo "##[set-output name=test;]$(echo ${TEST})"
         id: pr_details
 
   create_tags:
@@ -81,6 +83,8 @@ jobs:
           release_name: Release ${{ needs.create_tags.outputs.version_tag }}
           body: |
             ${{ needs.branch_name.outputs.pr_title }}
+
+            ${{ needs.branch_name.outputs.test }}
 
             ${{ needs.branch_name.outputs.pr_body }}
           draft: false
