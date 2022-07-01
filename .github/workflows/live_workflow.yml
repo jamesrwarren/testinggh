@@ -24,9 +24,7 @@ jobs:
     outputs:
       raw_branch: ${{ steps.extract_branch.outputs.branch_raw }}
       formatted_branch: ${{ steps.extract_branch.outputs.branch_formatted }}
-      pr_body1: ${{ steps.pr_details.outputs.pr_body1 }}
-      pr_body2: ${{ steps.pr_details.outputs.pr_body2 }}
-      pr_body3: ${{ steps.pr_details.outputs.pr_body3 }}
+      pr_body: ${{ steps.pr_details.outputs.pr_body }}
       pr_title: ${{ steps.pr_details.outputs.pr_title }}
     steps:
       - name: Extract branch
@@ -45,7 +43,7 @@ jobs:
           URL_FINAL="${BASE_PR_URL}/${PR_NUMBER}"
           echo $URL_FINAL
           TITLE=$(curl -s $URL_FINAL | jq .title)
-          TITLE="## ${TITLE:1:-1}"
+          TITLE="# ${TITLE:1:-1}"
           BODY=$(curl -s $URL_FINAL | jq .body)
           BODY=${BODY//'%'/'%25'}
           BODY=$(echo $BODY | sed '$ ! s/$/\\n/' | tr -d '\n' | sed 's/\\n/\%0A/g')
