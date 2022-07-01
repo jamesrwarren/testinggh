@@ -26,6 +26,7 @@ jobs:
       formatted_branch: ${{ steps.extract_branch.outputs.branch_formatted }}
       pr_body: ${{ steps.pr_details.outputs.pr_body }}
       pr_title: ${{ steps.pr_details.outputs.pr_title }}
+      test: ${{ steps.pr_details.outputs.test }}
     steps:
       - name: Extract branch
         shell: bash
